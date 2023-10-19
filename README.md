@@ -33,7 +33,7 @@ O nome do projeto será ChatFlow, ele consiste em um aplicativo de chat onde voc
 - Mantem a Barra de navegação
 
 ## Tela Chat:
-- Permite mandar e receber mensages, audios e imagens
+- Permite mandar e receber mensagens, audios e imagens
 - Mostra informações do usuário da conversa
 
 # Instalação
