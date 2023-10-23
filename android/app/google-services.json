@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "808955277367",
+    "project_id": "chat-flow-2baff",
+    "storage_bucket": "chat-flow-2baff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:808955277367:android:114512462b33b52d638fb2",
+        "android_client_info": {
+          "package_name": "com.example.chat_flow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqyrJ50R_Nxw1VPKlr6lPqjToxl4NCrRc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
