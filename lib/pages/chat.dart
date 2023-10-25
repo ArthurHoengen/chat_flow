@@ -36,10 +36,10 @@ class _ChatState extends State<Chat> {
     return Scaffold(
       appBar: AppBar(
         title: Text(contactName),
-        leading: const CircleAvatar(
+        leadingWidth: 45,
+        leading: CircleAvatar(
           // Imagem do perfil do contato
-          backgroundColor: Colors.white,
-          child: Icon(Icons.person, size: 40.0),
+          child: Text(contactName[0].toUpperCase()),
         ),
         backgroundColor: CF_purple,
       ),

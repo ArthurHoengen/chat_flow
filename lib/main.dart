@@ -1,10 +1,12 @@
 import 'package:chat_flow/pages/chat.dart';
 import 'package:chat_flow/pages/menu.dart';
 import 'package:chat_flow/pages/profile.dart';
+import 'package:chat_flow/pages/updateContact.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_flow/pages/login.dart';
 import 'package:chat_flow/pages/register.dart';
+import 'package:chat_flow/pages/addContact.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +29,8 @@ class MyApp extends StatelessWidget {
         '/register': (context) => const Register(),
         '/menu': (context) => const Menu(),
         '/profile': (context) => const Profile(),
+        '/addContact': (context) => const AddContact(),
+        '/updateContact': (context) => const UpdateContact(),
       },
     );
   }

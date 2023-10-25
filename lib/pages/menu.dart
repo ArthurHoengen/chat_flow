@@ -1,9 +1,16 @@
 import 'package:chat_flow/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:chat_flow/modules/Contact.dart';
 
-class Menu extends StatelessWidget {
+class Menu extends StatefulWidget {
   const Menu({Key? key}) : super(key: key);
 
+  @override
+  State<Menu> createState() => _MenuState();
+}
+
+class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,29 +18,44 @@ class Menu extends StatelessWidget {
         backgroundColor: CF_purple,
         title: Text('Menu'),
         automaticallyImplyLeading: false,
-      ),
-      body: ListView.builder(
-        itemCount: 10, // Número de conversas
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            leading: CircleAvatar(
-              // Imagem do perfil do contato
-              backgroundColor: CF_purple,
-              child: Icon(Icons.person),
-            ),
-            title: Text('Contato ${index + 1}'),
-            subtitle: Text('Última mensagem'),
-            onTap: () {
-              // Navegar para a tela de conversa ao tocar em um contato
-              _handleChat(context, 'Contato ${index + 1}');
+        actions: [
+          IconButton(
+            onPressed: () {
+              _handleNewContact(context);
             },
-          );
+            icon: Icon(Icons.add),
+          )
+        ],
+      ),
+      body: StreamBuilder<List<Contact>>(
+        stream: readContacts(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong! ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            final contacts = snapshot.data!;
+            if (contacts.isEmpty) {
+              return Padding(
+                  padding: const EdgeInsets.only(left: 55, top: 300),
+                  child: Text("You don't have any contacts added "));
+            }
+
+            return ListView(
+              children: contacts.map(buildContact).toList(),
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
         },
       ),
       bottomNavigationBar: NavigationBar(
         destinations: [
           IconButton(
-            onPressed: () {_handleProfile(context);},
+            onPressed: () {
+              Contact contact = Contact(
+                  name: "Me", email: "email@email.com", number: "123456789");
+              _handleProfile(context, contact);
+            },
             icon: Icon(Icons.person),
           ),
           IconButton(
@@ -41,23 +63,50 @@ class Menu extends StatelessWidget {
             icon: Icon(Icons.home),
           ),
           IconButton(
-            onPressed: () {_handleLogin(context);},
+            onPressed: () {
+              _handleLogin(context);
+            },
             icon: Icon(Icons.logout),
           ),
         ],
       ),
     );
   }
-}
 
-void _handleLogin(BuildContext context) {
-  Navigator.pop(context);
-}
+  void _handleLogin(BuildContext context) {
+    Navigator.pop(context);
+  }
 
-void _handleChat(BuildContext context, String contactName) {
-  Navigator.pushNamed(context, '/chat', arguments: contactName);
-}
+  void _handleChat(BuildContext context, String contactName) {
+    Navigator.pushNamed(context, '/chat', arguments: contactName);
+  }
 
-void _handleProfile(BuildContext context) {
-  Navigator.pushReplacementNamed(context, '/profile');
+  void _handleProfile(BuildContext context, Contact contact) {
+    Navigator.pushReplacementNamed(context, '/profile', arguments: contact);
+  }
+
+  void _handleNewContact(BuildContext context) {
+    Navigator.pushNamed(context, '/addContact');
+  }
+
+  Widget buildContact(Contact contact) => GestureDetector(
+        onTap: () {
+          _handleChat(context, contact.name);
+        },
+        child: ListTile(
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/profile', arguments: contact);
+            },
+              child: CircleAvatar(child: Text(contact.name[0].toUpperCase()))),
+          title: Text(contact.name),
+          subtitle: Text(contact.number),
+        ),
+      );
+
+  Stream<List<Contact>> readContacts() => FirebaseFirestore.instance
+      .collection('contacts')
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => Contact.fromJson(doc.data())).toList());
 }
