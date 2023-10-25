@@ -114,12 +114,4 @@ class _UpdateContactState extends State<UpdateContact> {
       ),
     );
   }
-  Future createContact(Contact contact) async {
-    final docUser = FirebaseFirestore.instance.collection('contacts').doc();
-    contact.id = docUser.id;
-
-    final json = contact.toJson();
-    await docUser.set(json);
-
-  }
 }
