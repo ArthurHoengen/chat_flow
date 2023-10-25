@@ -36,6 +36,12 @@ O nome do projeto será ChatFlow, ele consiste em um aplicativo de chat onde voc
 - Permite mandar e receber mensagens, audios e imagens
 - Mostra informações do usuário da conversa
 
+## Tela de Novo contato:
+- Adiciona novo contato 
+
+## Tela de Atualização de contato:
+- Altera informações do contato selecionado
+
 # Instalação
 
 - Certifique-se que o `Dart SDK` esteja na versão `3.1.0` e o `Flutter` na versão `3.13.1`.
