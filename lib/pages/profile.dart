@@ -1,7 +1,8 @@
 import 'package:chat_flow/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_flow/modules/Contact.dart';
+import 'package:chat_flow/modules/contact.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -13,13 +14,14 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     final Contact contact =
         ModalRoute.of(context)?.settings.arguments as Contact;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
-        backgroundColor: CF_purple,
+        title: const Text('Profile'),
+        backgroundColor: cfPurple,
         automaticallyImplyLeading: false,
       ),
       body: Center(
@@ -31,40 +33,37 @@ class _ProfileState extends State<Profile> {
               radius: 80.0,
               child: Text(contact.name[0], textScaleFactor: 2.125),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Text(
               contact.name,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10.0),
-            contact.email == ''
-            ? Text(
+            const SizedBox(height: 10.0),
+            Text(
               contact.email,
-              style: TextStyle(fontSize: 18.0),
-            )
-            : SizedBox(),
-
-            SizedBox(height: 10.0),
+              style: const TextStyle(fontSize: 18.0),
+            ),
+            const SizedBox(height: 10.0),
             Text(
               contact.number,
-              style: TextStyle(fontSize: 18.0),
+              style: const TextStyle(fontSize: 18.0),
             ),
             Center(
                 child: contact.id != ''
                     ? Column(children: [
-                        SizedBox(height: 10.0),
+                        const SizedBox(height: 10.0),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: CF_purple),
+                              backgroundColor: cfPurple),
                           onPressed: () {
                             _handleUpdate(context, contact);
                           },
-                          child: Text('Update contact'),
+                          child: const Text('Update contact'),
                         ),
-                        SizedBox(height: 10.0),
+                        const SizedBox(height: 10.0),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red),
@@ -75,12 +74,15 @@ class _ProfileState extends State<Profile> {
 
                             docUser.delete();
                             _handleMenu(context);
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Contact deleted successfully!')));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content:
+                                        Text('Contact deleted successfully!')));
                           },
-                          child: Text('Delete contact'),
+                          child: const Text('Delete contact'),
                         ),
                       ])
-                    : SizedBox(height: 10))
+                    : const SizedBox(height: 10))
           ],
         ),
       ),
@@ -90,23 +92,23 @@ class _ProfileState extends State<Profile> {
             onPressed: () {
               if (contact.id != '') {
                 Contact contact = Contact(
-                    name: "Me", email: "email@email.com", number: "123456789");
+                    name: "Me", email: user!.email!, number: "123456789");
                 _handleProfile(context, contact);
               }
             },
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
           ),
           IconButton(
             onPressed: () {
               _handleMenu(context);
             },
-            icon: Icon(Icons.home),
+            icon: const Icon(Icons.home),
           ),
           IconButton(
             onPressed: () {
               _handleLogin(context);
             },
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),
@@ -114,15 +116,17 @@ class _ProfileState extends State<Profile> {
   }
 
   void _handleProfile(BuildContext context, Contact contact) {
-    Navigator.pushNamed(context, '/profile', arguments: contact);
+    Navigator.pop(context);
+    Navigator.pushReplacementNamed(context, '/profile', arguments: contact);
   }
 
   void _handleLogin(BuildContext context) {
-    Navigator.popUntil(context, ModalRoute.withName('/login'));
+    Navigator.pushReplacementNamed(context, '/');
+    FirebaseAuth.instance.signOut();
   }
 
   void _handleMenu(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/menu');
+    Navigator.pushReplacementNamed(context, '/');
   }
 
   void _handleUpdate(BuildContext context, Contact contact) {

@@ -1,12 +1,11 @@
 import 'package:chat_flow/colors.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../modules/message.dart';
 
 class Chat extends StatefulWidget {
+  const Chat({Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => _ChatState();
-
 }
 
 class _ChatState extends State<Chat> {
@@ -15,7 +14,7 @@ class _ChatState extends State<Chat> {
 
   void _sendMessage() {
     final String text = messageController.text;
-    final String sender = 'Você';
+    String sender = 'Você'; //sera alterado
     final DateTime timestamp = DateTime.now();
 
     final Message newMessage = Message(
@@ -32,16 +31,18 @@ class _ChatState extends State<Chat> {
 
   @override
   Widget build(BuildContext context) {
-    final String contactName = ModalRoute.of(context)?.settings.arguments as String;
+    final String contactName =
+        ModalRoute.of(context)?.settings.arguments as String;
     return Scaffold(
       appBar: AppBar(
         title: Text(contactName),
         leadingWidth: 45,
         leading: CircleAvatar(
-          // Imagem do perfil do contato
-          child: Text(contactName[0].toUpperCase()),
-        ),
-        backgroundColor: CF_purple,
+            // Imagem do perfil do contato
+            child: contactName == ""
+                ? const Icon(Icons.account_circle)
+                : Text(contactName[0].toUpperCase())),
+        backgroundColor: cfPurple,
       ),
       body: Column(
         children: [
@@ -57,7 +58,7 @@ class _ChatState extends State<Chat> {
               },
             ),
           ),
-          Divider(height: 1.0),
+          const Divider(height: 1.0),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -65,11 +66,12 @@ class _ChatState extends State<Chat> {
                 Expanded(
                   child: TextField(
                     controller: messageController,
-                    decoration: InputDecoration(hintText: 'Digite sua mensagem...'),
+                    decoration: const InputDecoration(
+                        hintText: 'Digite sua mensagem...'),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: () {
                     _sendMessage();
                   },
@@ -81,8 +83,4 @@ class _ChatState extends State<Chat> {
       ),
     );
   }
-}
-
-void _handleMenu(BuildContext context) {
-  Navigator.pushNamed(context, '/menu');
 }
