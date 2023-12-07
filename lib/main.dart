@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:chat_flow/pages/login.dart';
 import 'package:chat_flow/pages/register.dart';
 import 'package:chat_flow/pages/addContact.dart';
+import 'package:chat_flow/modules/Utils.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +16,8 @@ Future main() async {
   runApp(MyApp());
 }
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -22,12 +25,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Chat Flow',
-      initialRoute: '/login',
+      theme: ThemeData(),
+      navigatorKey: navigatorKey,
+      scaffoldMessengerKey: Utils.messengerKey,
+      initialRoute: '/',
       routes: {
-        '/chat': (context) => Chat(),
-        '/login': (context) => const Login(),
+        '/': (context) => Login(),
         '/register': (context) => const Register(),
         '/menu': (context) => const Menu(),
+        '/chat': (context) => Chat(),
         '/profile': (context) => const Profile(),
         '/addContact': (context) => const AddContact(),
         '/updateContact': (context) => const UpdateContact(),

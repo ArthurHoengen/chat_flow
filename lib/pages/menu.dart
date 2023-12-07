@@ -1,5 +1,6 @@
 import 'package:chat_flow/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_flow/modules/Contact.dart';
 
@@ -16,14 +17,14 @@ class _MenuState extends State<Menu> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CF_purple,
-        title: Text('Menu'),
+        title: const Text('Menu'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
             onPressed: () {
               _handleNewContact(context);
             },
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
           )
         ],
       ),
@@ -35,8 +36,8 @@ class _MenuState extends State<Menu> {
           } else if (snapshot.hasData) {
             final contacts = snapshot.data!;
             if (contacts.isEmpty) {
-              return Padding(
-                  padding: const EdgeInsets.only(left: 55, top: 300),
+              return const Padding(
+                  padding: EdgeInsets.only(left: 55, top: 300),
                   child: Text("You don't have any contacts added "));
             }
 
@@ -56,17 +57,17 @@ class _MenuState extends State<Menu> {
                   name: "Me", email: "email@email.com", number: "123456789");
               _handleProfile(context, contact);
             },
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
           ),
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.home),
+            icon: const Icon(Icons.home),
           ),
           IconButton(
             onPressed: () {
               _handleLogin(context);
             },
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),
@@ -74,7 +75,7 @@ class _MenuState extends State<Menu> {
   }
 
   void _handleLogin(BuildContext context) {
-    Navigator.pop(context);
+    FirebaseAuth.instance.signOut();
   }
 
   void _handleChat(BuildContext context, String contactName) {
@@ -95,10 +96,13 @@ class _MenuState extends State<Menu> {
         },
         child: ListTile(
           leading: GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, '/profile', arguments: contact);
-            },
-              child: CircleAvatar(child: Text(contact.name[0].toUpperCase()))),
+              onTap: () {
+                Navigator.pushNamed(context, '/profile', arguments: contact);
+              },
+              child: CircleAvatar(
+                  child: contact.name == ""
+                      ? const Icon(Icons.account_circle)
+                      : Text(contact.name[0].toUpperCase()))),
           title: Text(contact.name),
           subtitle: Text(contact.number),
         ),

@@ -2,6 +2,7 @@ import 'package:chat_flow/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_flow/modules/Contact.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class _ProfileState extends State<Profile> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: const Text('Profile'),
         backgroundColor: CF_purple,
         automaticallyImplyLeading: false,
       ),
@@ -31,40 +32,39 @@ class _ProfileState extends State<Profile> {
               radius: 80.0,
               child: Text(contact.name[0], textScaleFactor: 2.125),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Text(
               contact.name,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             contact.email == ''
-            ? Text(
-              contact.email,
-              style: TextStyle(fontSize: 18.0),
-            )
-            : SizedBox(),
-
-            SizedBox(height: 10.0),
+                ? Text(
+                    contact.email,
+                    style: const TextStyle(fontSize: 18.0),
+                  )
+                : const SizedBox(),
+            const SizedBox(height: 10.0),
             Text(
               contact.number,
-              style: TextStyle(fontSize: 18.0),
+              style: const TextStyle(fontSize: 18.0),
             ),
             Center(
                 child: contact.id != ''
                     ? Column(children: [
-                        SizedBox(height: 10.0),
+                        const SizedBox(height: 10.0),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               backgroundColor: CF_purple),
                           onPressed: () {
                             _handleUpdate(context, contact);
                           },
-                          child: Text('Update contact'),
+                          child: const Text('Update contact'),
                         ),
-                        SizedBox(height: 10.0),
+                        const SizedBox(height: 10.0),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red),
@@ -75,12 +75,15 @@ class _ProfileState extends State<Profile> {
 
                             docUser.delete();
                             _handleMenu(context);
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Contact deleted successfully!')));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content:
+                                        Text('Contact deleted successfully!')));
                           },
-                          child: Text('Delete contact'),
+                          child: const Text('Delete contact'),
                         ),
                       ])
-                    : SizedBox(height: 10))
+                    : const SizedBox(height: 10))
           ],
         ),
       ),
@@ -94,19 +97,19 @@ class _ProfileState extends State<Profile> {
                 _handleProfile(context, contact);
               }
             },
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
           ),
           IconButton(
             onPressed: () {
               _handleMenu(context);
             },
-            icon: Icon(Icons.home),
+            icon: const Icon(Icons.home),
           ),
           IconButton(
             onPressed: () {
               _handleLogin(context);
             },
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),
@@ -118,7 +121,7 @@ class _ProfileState extends State<Profile> {
   }
 
   void _handleLogin(BuildContext context) {
-    Navigator.popUntil(context, ModalRoute.withName('/login'));
+    FirebaseAuth.instance.signOut();
   }
 
   void _handleMenu(BuildContext context) {

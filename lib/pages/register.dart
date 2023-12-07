@@ -1,15 +1,16 @@
-import 'package:flutter/cupertino.dart';
+import 'package:chat_flow/main.dart';
+import 'package:chat_flow/modules/Utils.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:chat_flow/colors.dart';
-import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:email_validator/email_validator.dart';
 
 class Register extends StatelessWidget {
   const Register({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return RegistrationPage();
+    return const RegistrationPage();
   }
 }
 
@@ -18,43 +19,39 @@ void _handleMenu(BuildContext context) {
 }
 
 class RegistrationPage extends StatefulWidget {
+  const RegistrationPage({super.key});
+
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
-  final TextEditingController _numberController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  XFile? _selectedImage;
 
-  Future<void> _getImage() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _selectedImage = pickedImage;
-    });
-  }
-
-  void _register(BuildContext context) {
-    String number = _numberController.text;
-    String name = _nameController.text;
+  void _register(BuildContext context) async {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    //LOGICA PARA TRATAMENTO DA IMAGEM:
-    // if (_selectedImage != null) {
-    //
-    // } else {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text('Por favor, selecione uma imagem.'),
-    //     ),
-    //   );
-    // }
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
 
-    _handleMenu(context);
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (exception) {
+      print(exception);
+
+      Utils.showSnackBar(exception.message);
+      navigatorKey.currentState!.pop();
+    }
   }
 
   @override
@@ -62,69 +59,57 @@ class _RegistrationPageState extends State<RegistrationPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CF_purple,
-        title: Text('Register'),
+        title: const Text('Register'),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              GestureDetector(
-                onTap: _getImage,
-                child: Container(
-                  width: 100.0,
-                  height: 100.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.grey[200],
-                  ),
-                  child: Center(
-                    child: _selectedImage == null
-                        ? Icon(
-                      Icons.camera_alt,
-                      size: 40.0,
-                    )
-                        : Image.file(
-                      File(_selectedImage!.path),
-                      width: 100.0,
-                      height: 100.0,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+        child: Form(
+          key: formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (name) => name != null && name.length > 20
+                      ? 'Enter max 20 characters'
+                      : null,
                 ),
-              ),
-              SizedBox(height: 16.0),
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
-              ),
-              SizedBox(height: 16.0),
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
-              ),
-              SizedBox(height: 16.0),
-              TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
-                obscureText: true,
-              ),
-              SizedBox(height: 16.0),
-              TextField(
-                controller: _numberController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: CF_purple),
-                onPressed: () {
-                  _register(context);
-                },
-                child: Text('Register'),
-              ),
-            ],
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  controller: _emailController,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (email) =>
+                      email != null && !EmailValidator.validate(email)
+                          ? 'Enter a valid Email'
+                          : null,
+                ),
+                const SizedBox(height: 16.0),
+                TextFormField(
+                    controller: _passwordController,
+                    textInputAction: TextInputAction.done,
+                    decoration: const InputDecoration(labelText: 'Password'),
+                    obscureText: true,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) => value != null && value.length < 6
+                        ? 'Enter min. 6 characters'
+                        : null),
+                const SizedBox(height: 16.0),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: CF_purple),
+                  onPressed: () {
+                    _register(context);
+                  },
+                  child: const Text('Register'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

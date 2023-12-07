@@ -109,7 +109,7 @@ class _UpdateContactState extends State<UpdateContact> {
                 Navigator.popUntil(context, ModalRoute.withName('/menu'));
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Contact updated successfully!')));
               },
-              child: Text("Update Contact"))
+              child: const Text("Update Contact"))
         ],
       ),
     );
