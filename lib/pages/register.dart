@@ -1,5 +1,5 @@
 import 'package:chat_flow/main.dart';
-import 'package:chat_flow/modules/Utils.dart';
+import 'package:chat_flow/modules/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_flow/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,10 +12,6 @@ class Register extends StatelessWidget {
   Widget build(BuildContext context) {
     return const RegistrationPage();
   }
-}
-
-void _handleMenu(BuildContext context) {
-  Navigator.pushReplacementNamed(context, '/menu');
 }
 
 class RegistrationPage extends StatefulWidget {
@@ -32,6 +28,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   void _register(BuildContext context) async {
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return;
     String email = _emailController.text;
     String password = _passwordController.text;
 
@@ -51,15 +49,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
       Utils.showSnackBar(exception.message);
       navigatorKey.currentState!.pop();
+      return;
     }
+    navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: CF_purple,
-        title: const Text('Register'),
+        backgroundColor: cfPurple,
+        title: const Text('Login'),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -102,7 +102,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         : null),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: CF_purple),
+                  style: ElevatedButton.styleFrom(backgroundColor: cfPurple),
                   onPressed: () {
                     _register(context);
                   },

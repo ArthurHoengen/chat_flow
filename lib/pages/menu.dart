@@ -2,7 +2,7 @@ import 'package:chat_flow/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_flow/modules/Contact.dart';
+import 'package:chat_flow/modules/contact.dart';
 
 class Menu extends StatefulWidget {
   const Menu({Key? key}) : super(key: key);
@@ -12,11 +12,12 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  final user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: CF_purple,
+        backgroundColor: cfPurple,
         title: const Text('Menu'),
         automaticallyImplyLeading: false,
         actions: [
@@ -53,8 +54,8 @@ class _MenuState extends State<Menu> {
         destinations: [
           IconButton(
             onPressed: () {
-              Contact contact = Contact(
-                  name: "Me", email: "email@email.com", number: "123456789");
+              Contact contact =
+                  Contact(name: "Me", email: user!.email!, number: "123456789");
               _handleProfile(context, contact);
             },
             icon: const Icon(Icons.person),

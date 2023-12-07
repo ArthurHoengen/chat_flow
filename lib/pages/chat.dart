@@ -42,7 +42,7 @@ class _ChatState extends State<Chat> {
             child: contactName == ""
                 ? const Icon(Icons.account_circle)
                 : Text(contactName[0].toUpperCase())),
-        backgroundColor: CF_purple,
+        backgroundColor: cfPurple,
       ),
       body: Column(
         children: [
@@ -66,8 +66,8 @@ class _ChatState extends State<Chat> {
                 Expanded(
                   child: TextField(
                     controller: messageController,
-                    decoration:
-                        const InputDecoration(hintText: 'Digite sua mensagem...'),
+                    decoration: const InputDecoration(
+                        hintText: 'Digite sua mensagem...'),
                   ),
                 ),
                 IconButton(

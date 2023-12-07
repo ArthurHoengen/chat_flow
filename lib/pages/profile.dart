@@ -1,7 +1,7 @@
 import 'package:chat_flow/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_flow/modules/Contact.dart';
+import 'package:chat_flow/modules/contact.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Profile extends StatefulWidget {
@@ -14,13 +14,14 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     final Contact contact =
         ModalRoute.of(context)?.settings.arguments as Contact;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
-        backgroundColor: CF_purple,
+        backgroundColor: cfPurple,
         automaticallyImplyLeading: false,
       ),
       body: Center(
@@ -41,12 +42,10 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             const SizedBox(height: 10.0),
-            contact.email == ''
-                ? Text(
-                    contact.email,
-                    style: const TextStyle(fontSize: 18.0),
-                  )
-                : const SizedBox(),
+            Text(
+              contact.email,
+              style: const TextStyle(fontSize: 18.0),
+            ),
             const SizedBox(height: 10.0),
             Text(
               contact.number,
@@ -58,7 +57,7 @@ class _ProfileState extends State<Profile> {
                         const SizedBox(height: 10.0),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: CF_purple),
+                              backgroundColor: cfPurple),
                           onPressed: () {
                             _handleUpdate(context, contact);
                           },
@@ -93,7 +92,7 @@ class _ProfileState extends State<Profile> {
             onPressed: () {
               if (contact.id != '') {
                 Contact contact = Contact(
-                    name: "Me", email: "email@email.com", number: "123456789");
+                    name: "Me", email: user!.email!, number: "123456789");
                 _handleProfile(context, contact);
               }
             },
@@ -117,15 +116,17 @@ class _ProfileState extends State<Profile> {
   }
 
   void _handleProfile(BuildContext context, Contact contact) {
-    Navigator.pushNamed(context, '/profile', arguments: contact);
+    Navigator.pop(context);
+    Navigator.pushReplacementNamed(context, '/profile', arguments: contact);
   }
 
   void _handleLogin(BuildContext context) {
+    Navigator.pushReplacementNamed(context, '/');
     FirebaseAuth.instance.signOut();
   }
 
   void _handleMenu(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/menu');
+    Navigator.pushReplacementNamed(context, '/');
   }
 
   void _handleUpdate(BuildContext context, Contact contact) {
