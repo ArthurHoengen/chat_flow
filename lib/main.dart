@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:chat_flow/pages/login.dart';
 import 'package:chat_flow/pages/menu.dart';
 import 'package:chat_flow/pages/profile.dart';
 import 'package:chat_flow/pages/update_contact.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
 import 'package:chat_flow/pages/register.dart';
 import 'package:chat_flow/pages/add_contact.dart';
 import 'package:chat_flow/modules/utils.dart';
@@ -12,7 +13,7 @@ import 'package:chat_flow/modules/utils.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }
 
