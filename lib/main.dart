@@ -1,13 +1,12 @@
-import 'package:chat_flow/pages/chat.dart';
 import 'package:chat_flow/pages/login.dart';
 import 'package:chat_flow/pages/menu.dart';
 import 'package:chat_flow/pages/profile.dart';
-import 'package:chat_flow/pages/updateContact.dart';
+import 'package:chat_flow/pages/update_contact.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_flow/pages/register.dart';
-import 'package:chat_flow/pages/addContact.dart';
+import 'package:chat_flow/pages/add_contact.dart';
 import 'package:chat_flow/modules/utils.dart';
 
 Future main() async {
