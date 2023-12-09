@@ -12,6 +12,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -62,14 +63,19 @@ class _LoginState extends State<Login> {
   }
 
   Future _login() async {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await _firebaseAuth.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim());
     } on FirebaseAuthException catch (exception) {
-      print(exception);
-
       Utils.showSnackBar(exception.message);
+      navigatorKey.currentState!.pop();
+      return;
     }
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
