@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const MainPage(),
         '/register': (context) => const Register(),
-        '/chat': (context) => const Chat(),
         '/profile': (context) => const Profile(),
         '/addContact': (context) => const AddContact(),
         '/updateContact': (context) => const UpdateContact(),

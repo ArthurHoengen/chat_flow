@@ -1,4 +1,5 @@
 import 'package:chat_flow/colors.dart';
+import 'package:chat_flow/pages/chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -79,10 +80,6 @@ class _MenuState extends State<Menu> {
     FirebaseAuth.instance.signOut();
   }
 
-  void _handleChat(BuildContext context, String contactName) {
-    Navigator.pushNamed(context, '/chat', arguments: contactName);
-  }
-
   void _handleProfile(BuildContext context, Contact contact) {
     Navigator.pushReplacementNamed(context, '/profile', arguments: contact);
   }
@@ -91,23 +88,31 @@ class _MenuState extends State<Menu> {
     Navigator.pushNamed(context, '/addContact');
   }
 
-  Widget buildContact(Contact contact) => GestureDetector(
-        onTap: () {
-          _handleChat(context, contact.name);
+  Widget buildContact(Contact contact) {
+    if (user!.email != contact.email) {
+      return GestureDetector(
+        onTap: () => {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Chat(
+                  receiverUserEmail: contact.email, receiverUserId: contact.id),
+            ),
+          ),
         },
         child: ListTile(
           leading: GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, '/profile', arguments: contact);
               },
-              child: CircleAvatar(
-                  child: contact.name == ""
-                      ? const Icon(Icons.account_circle)
-                      : Text(contact.name[0].toUpperCase()))),
+              child: CircleAvatar(child: Text(contact.name[0].toUpperCase()))),
           title: Text(contact.name),
           subtitle: Text(contact.number),
         ),
       );
+    }
+    return const SizedBox();
+  }
 
   Stream<List<Contact>> readContacts() => FirebaseFirestore.instance
       .collection('contacts')
